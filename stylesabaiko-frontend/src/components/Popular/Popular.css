@@ -1,0 +1,98 @@
+.popular {
+    max-width: 1200px;
+    margin: 60px auto 140px;
+    padding: 0 20px;
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #222;
+}
+
+.popular-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.popular-header h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #ff4c4c;
+}
+
+.underline {
+    width: 80px;
+    height: 4px;
+    margin: 12px auto 0;
+    border-radius: 20px;
+    background: linear-gradient(90deg, #ff4c4c, #ff847c);
+    box-shadow: 0 4px 8px rgba(255, 76, 76, 0.35);
+}
+
+.popular-list {
+    display: flex;
+    gap: 24px;
+    /* overflow-x: auto; */
+    padding: 12px 0;
+    /* only vertical padding, no horizontal */
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    margin-left: -12px;
+    /* pulls container left */
+    margin-right: -12px;
+    z-index: 100;
+    /* pulls container right */
+}
+
+.popular-list::-webkit-scrollbar {
+  height: 8px;
+  margin: 0 -12px; /* counteract container negative margins */
+}
+
+
+.popular-list::-webkit-scrollbar-thumb {
+    background-color: #ff4c4c;
+    border-radius: 4px;
+}
+
+.popular-list > * {
+  scroll-snap-align: center;
+  flex: 0 0 280px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(255, 76, 76, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  /* overflow: hidden; */
+  padding: 0 12px;  /* add horizontal padding */
+  box-sizing: border-box; /* important to include padding inside width */
+}
+
+.popular-list>*:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 16px 40px rgba(255, 76, 76, 0.3);
+}
+
+@media (max-width: 800px) {
+    .popular-list {
+        gap: 16px;
+    }
+
+    .popular-list>* {
+        flex: 0 0 220px;
+    }
+}
+
+@media (max-width: 480px) {
+    .popular-list>* {
+        flex: 0 0 180px;
+    }
+}
+
+.popular-list > *:first-child {
+  margin-left: 12px;
+}
+.popular-list > *:last-child {
+  margin-right: 12px;
+}
