@@ -1,0 +1,102 @@
+.footer {
+    background-color: #333;
+    color: #fff;
+    padding: 40px 0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-section {
+    flex: 1;
+    margin: 10px;
+    min-width: 200px;
+}
+
+.footer-section h4 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #f1f1f1;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+    color: #ccc;
+    text-decoration: none;
+}
+
+.footer-section ul li a:hover {
+    color: #f97c7c;
+}
+
+.footer-section p {
+    margin: 5px 0;
+    color: #ffffff !important
+}
+
+.footer-section form {
+    display: flex;
+    align-items: center;
+}
+
+.footer-section form input[type="email"] {
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    margin-right: 10px;
+    width: 70%;
+}
+
+.footer-section form button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #e74c3c;
+    color: #fff;
+    cursor: pointer;
+}
+
+.footer-section form button:hover {
+    background-color: #c0392b;
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.footer-social .social-icon {
+    color: #fff;
+    margin: 0 10px;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #222;
+    color: #ccc;
+}
+
+.footer-bottom p {
+    margin: 0;
+    color: #ffffff !important;
+}
