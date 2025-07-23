@@ -1,0 +1,10 @@
+@BASE_URL = http://localhost:5000/api/user
+
+# Login Request 
+POST  {{BASE_URL}}/login
+Content-Type: application/json
+
+{
+    "email":"aa@gmail.com",
+    "password":"password"
+}
