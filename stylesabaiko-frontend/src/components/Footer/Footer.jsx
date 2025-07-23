@@ -10,7 +10,6 @@ const Footer = () => {
                     <h4>Company</h4>
                     <ul>
                         <li><Link to="/about">About Us</Link></li>
-                        <li><Link to="/careers">Careers</Link></li>
                         <li><Link to="/contact">Contact Us</Link></li>
                         <li><Link to="/blog">Blog</Link></li>
                     </ul>
@@ -29,9 +28,6 @@ const Footer = () => {
                     <p>Email: help@stylesabaiko.com</p>
                     <p>Phone: +977-9803009626</p>
                 </div>
-            </div>
-            <div className="footer-bottom">
-                <p>&copy; {new Date().getFullYear()} StyleSabaiko. All rights reserved.</p>
             </div>
         </footer>
     );
