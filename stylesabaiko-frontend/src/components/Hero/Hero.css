@@ -1,0 +1,211 @@
+.hero {
+    position: relative;
+    min-height: 50vh;
+    /* Adjust to desired height */
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.hero-carousel .slick-slide {
+    height: 100%;
+    /* Full height for each slide */
+}
+
+.hero-slide {
+    position: relative;
+    height: 90vh;
+    /* Set a fixed height or adjust as needed */
+    overflow: hidden;
+    /* Ensure no overflow issues */
+}
+
+.hero-slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    /* Darker overlay with 50% opacity for better text contrast */
+    z-index: 1;
+    /* Ensure it is above the image but below the content */
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    /* Make sure image covers the slide container */
+    object-fit: cover;
+    /* Ensures the image covers the container */
+    object-position: bottom;
+    /* Focuses on the bottom part of the image */
+    z-index: 0;
+    /* Ensure it is behind the dimming overlay */
+}
+
+.hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    text-align: center;
+    z-index: 2;
+    /* Ensure it is above the dimming overlay */
+    max-width: 1000px;
+    /* Increased width for better content fit */
+    padding: 20px;
+    background: rgba(0, 0, 0, 0);
+    /* Semi-transparent background for better readability */
+    border-radius: 10px;
+    /* Rounded corners for the content container */
+}
+
+.hero-content h2 {
+    color: #ffffff;
+    font-size: 24px;
+    /* Larger font size for better visibility */
+    margin-bottom: 10px;
+    /* Space between h2 and the next content */
+    font-weight: 600;
+    /* Slightly lighter weight for better readability */
+}
+
+.hero-content p {
+    color: #ffffff;
+    font-size: 36px;
+    /* Adjust font size for emphasis */
+    font-weight: 700;
+    /* Bold text for emphasis */
+    line-height: 1.2;
+    /* Improve readability with increased line height */
+    margin: 10px 0;
+    /* Space between paragraphs */
+}
+
+.hero-hand-icon {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+    margin: 20px 0;
+    /* Space around the hand icon section */
+}
+
+.hero-hand-icon img {
+    width: 70px;
+}
+
+.hero-latest-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    width: 260px;
+    height: 58px;
+    border-radius: 999px;
+    margin-top: 24px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(255, 65, 65, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-latest-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    width: 260px;
+    height: 58px;
+    border-radius: 999px;
+    margin-top: 24px;
+    background: linear-gradient(135deg, #ff6a6a, #ff4141);
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(255, 65, 65, 0.3);
+    border: none;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.hero-latest-btn img {
+    width: 20px;
+    filter: brightness(0) invert(1);
+}
+
+.hero-latest-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 24px rgba(255, 65, 65, 0.4);
+    background: linear-gradient(135deg, #ff5151, #e03e3e);
+}
+
+
+/* Slick Slider Styles */
+.slick-dots {
+    bottom: 20px;
+    /* Adjust position of dots as needed */
+}
+
+.slick-dots li button:before {
+    font-size: 12px;
+    /* Adjust size of dots */
+    color: white;
+    /* Color of dots */
+}
+
+/* Media Queries */
+@media(max-width:1200px) {
+    .hero-content p {
+        font-size: 32px;
+        /* Adjust font size for smaller screens */
+    }
+
+    .hero-content h2 {
+        font-size: 20px;
+    }
+}
+
+@media(max-width:900px) {
+    .hero-content p {
+        font-size: 28px;
+    }
+
+    .hero-content h2 {
+        font-size: 18px;
+    }
+}
+
+@media(max-width:700px) {
+    .hero-content p {
+        font-size: 24px;
+    }
+
+    .hero-content h2 {
+        font-size: 16px;
+    }
+
+    .hero-content {
+        line-height: 1.2;
+        padding: 15px;
+        /* Adjust padding for smaller screens */
+    }
+
+    .hero-latest-btn {
+        margin-top: 15px;
+    }
+}
