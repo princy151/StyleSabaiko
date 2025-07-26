@@ -1,0 +1,89 @@
+.search-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.search-title {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.loading,
+.error,
+.no-results {
+    text-align: center;
+    font-size: 1.2em;
+    color: #555;
+}
+
+.results-list {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.result-item {
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s, transform 0.3s;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: #fff;
+    /* Optional: background color for visibility */
+}
+
+.result-item:hover {
+    box-shadow: 0 4px 8px #ff4141;
+    transform: translateY(-3px);
+}
+
+.result-item a {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.result-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-right: 20px;
+    /* Slightly increased margin for better spacing */
+    border-radius: 5px;
+}
+
+.result-details {
+    flex: 1;
+    text-align: center;
+    /* Center text inside the details */
+}
+
+.result-title {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+.result-description {
+    font-size: 1em;
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.result-price {
+    font-size: 1.2em;
+    color: #ff4141;
+    font-weight: bold;
+}

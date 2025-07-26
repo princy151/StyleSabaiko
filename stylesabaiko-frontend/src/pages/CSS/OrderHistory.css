@@ -1,0 +1,84 @@
+.order-history {
+    padding: 40px 20px;
+    max-width: 900px;
+    margin: 40px auto;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px #FF4141;
+}
+
+.order-history h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    /* Reduced gap between cards */
+}
+
+.order-card {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 5px;
+    /* Reduced padding */
+}
+
+.order-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px #FF4141;
+}
+
+.order-image {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-right: 10px;
+    /* Reduced margin */
+}
+
+.order-details {
+    flex: 1;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 10px;
+    /* Reduced padding */
+}
+
+.order-details p {
+    margin: 5px 0;
+    /* Reduced margin */
+    color: #555;
+    font-size: 1rem;
+}
+
+.order-details p strong {
+    color: #333;
+}
+
+.order-number {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.order-date,
+.order-total {
+    font-size: 1rem;
+}
+
+.loading {
+    text-align: center;
+    color: #777;
+    font-size: 1.2rem;
+}

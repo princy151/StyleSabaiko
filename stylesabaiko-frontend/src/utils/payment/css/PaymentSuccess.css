@@ -1,0 +1,40 @@
+.payment-success-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+}
+
+.success-message {
+    margin-bottom: 20px;
+}
+
+.success-message h1 {
+    color: #4caf50;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.success-message p {
+    color: #555;
+    font-size: 1.2rem;
+}
+
+.go-home-button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.go-home-button:hover {
+    background-color: #45a049;
+}
