@@ -30,13 +30,13 @@ const userSchema = new mongoose.Schema({
         default: false,
         required: false
     },
-    phone: {
-        type: String,
-        required: true
-    },
+    // phone: {
+    //     type: String,
+    //     required: true
+    // },
     otp: {
         type: String,
-        required: true
+        required: false 
     }
 })
 const user = mongoose.model('users', userSchema)

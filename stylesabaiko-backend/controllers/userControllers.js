@@ -2,72 +2,62 @@
 const userModel = require('../models/userModel')
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 const path = require('path')
 const fs = require('fs')
 
 // 1. Creating user function
 const createUser = async (req, res) => {
-    //1. Get data from the user (Fname,lname, email,pp)
-
-    //#.Dstructuring
     const { fullName, phone, email, password } = req.body;
 
-    //2. validation 
     if (!fullName || !phone || !email || !password) {
         return res.json({
-            "success": false,
-            "message": "Please enter all fields!"
-        })
-    }                                                        // != first name xaina vanye hunxa meaning 
-    //try- catch (error Handling)
-    try {
-        //check if the user is already exist
-        const existingUser = await userModel.findOne({ email: email })
-        if (existingUser) {
-            return res.json({
-                "success": false,
-                "message": "User Already Exists!"
-            })
-        }
-
-        // Hash /encrypt the password
-        const randomSalt = await bcrypt.genSalt(10)
-        const hashPassword = await bcrypt.hash(password, randomSalt)
-
-        const otp = await generateOtp();
-        //Save the user in database 
-        const newUser = new userModel({
-            //Fields:Values received from user 
-            fullName: fullName,
-            phone: phone,
-            email: email,
-            password: hashPassword,
-            otp: otp
-        })
-
-        //Actually save the user in database 
-        await newUser.save()             //certain time launa sakxa VANYE Await launye ho
-
-        // sendOtp(phone, `The OTP is ${otp}`).then((res) => { }).catch((error) => { });
-        
-        // Send the success response
-        res.json({
-            "success": true,
-            "message": "User created successfully"
-        })
-
-
-    } catch (error) {
-        console.log(error)                               //resposce pathai ra ko ho catch ma 
-        return res.status(500).json({
-            "success": false,
-            "message": "Internal Server Error!"
-
-        })
-
+            success: false,
+            message: "Please enter all fields!"
+        });
     }
 
-}
+    try {
+        const existingUser = await userModel.findOne({ email });
+        if (existingUser) {
+            return res.json({
+                success: false,
+                message: "User Already Exists!"
+            });
+        }
+
+        const randomSalt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(password, randomSalt);
+
+        const otp = await generateOtp();
+
+        const newUser = new userModel({
+            fullName,
+            phone,
+            email,
+            password: hashPassword,
+            otp
+        });
+
+        await newUser.save();
+
+        // ✅ Send OTP to email
+        await sendOtpEmail(email, otp);
+
+        return res.json({
+            success: true,
+            message: "User created successfully. OTP sent to email."
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error!"
+        });
+    }
+};
+
 // 2.login user function 
 const loginUser = async (req, res) => {
     // res.send('Login user api in working!')
@@ -214,7 +204,7 @@ const updateUser = async (req, res) => {
 
 const changePassword = async (req, res) => {
     const user = req.user;
-    const {oldPassword, newPassword} = req.body
+    const { oldPassword, newPassword } = req.body
     try {
         // Find the user by ID
         const existedUser = await userModel.findById(user.id);
@@ -242,7 +232,7 @@ const changePassword = async (req, res) => {
         existedUser.password = hashedPassword;
         await existedUser.save();
 
-        return res.status(201).json( { success: true, message: 'Password changed successfully' });
+        return res.status(201).json({ success: true, message: 'Password changed successfully' });
     } catch (error) {
         return res.status(500).json({
             success: false,
@@ -275,7 +265,7 @@ const getUsers = async (req, res) => {
             success: false,
             message: 'Internal Server Error.'
         })
-        
+
     }
 }
 
@@ -309,40 +299,89 @@ const deleteUser = async (req, res) => {
     }
 }
 
-const sendOtp = async (to, message) => {
-    const url = 'https://api.managepoint.co/api/sms/send';
-    const apiKey = process.env['SMS_API_KEY'];
-    const payload = {
-      apiKey,
-      to,
-      message,
+
+const sendOtpEmail = async (to, otp) => {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail', // or another SMTP provider
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+        }
+    });
+
+    const mailOptions = {
+        from: `"Your App Name" <${process.env.EMAIL_USER}>`,
+        to,
+        subject: 'Your OTP Code',
+        html: `<p>Hello,</p><p>Your OTP is: <b>${otp}</b></p><p>This OTP is valid for 10 minutes.</p>`
     };
-    const headers = {
-      'Content-Type': 'application/json',
-    };
+
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(payload),
-      });
-      return await response.json();
+        await transporter.sendMail(mailOptions);
+        console.log('OTP Email sent');
     } catch (error) {
-      throw new Error(error.message);
+        console.error('Failed to send OTP email:', error);
+        throw error;
     }
-}
+};
 
 const generateOtp = async (length = 6) => {
     const characters = '0123456789'; // OTP will only contain numbers
-  let otp = '';
+    let otp = '';
 
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    otp += characters[randomIndex];
-  }
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        otp += characters[randomIndex];
+    }
 
-  return otp;
+    return otp;
 }
+
+const verifyOtp = async (req, res) => {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+        return res.status(400).json({
+            success: false,
+            message: "Email and OTP are required."
+        });
+    }
+
+    try {
+        const user = await userModel.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found."
+            });
+        }
+
+        if (user.otp !== otp) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid OTP."
+            });
+        }
+
+        // Optional: Clear OTP after successful verification
+        user.otp = null;
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "OTP verified successfully."
+        });
+
+    } catch (error) {
+        console.error("OTP verification error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+    }
+};
+
 
 // exporting 
 module.exports = {
@@ -352,5 +391,7 @@ module.exports = {
     updateUser,
     changePassword,
     getUsers,
-    deleteUser
+    deleteUser,
+    verifyOtp
 }
+

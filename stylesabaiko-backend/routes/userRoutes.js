@@ -31,6 +31,8 @@ router.get('/admin/get-all', adminGuard, userControllers.getUsers)
 
 router.delete('/admin/:id', adminGuard, userControllers.deleteUser)
 
+router.post('/verify-otp', userControllers.verifyOtp);
+
 module.exports = router;
 
 
