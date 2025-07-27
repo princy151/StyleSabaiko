@@ -12,6 +12,7 @@ const Register = () => {
     const [phone, setPhone] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [passwordStrength, setPasswordStrength] = useState("");
 
     // State for errors
     const [fullNameError, setFullNameError] = useState("");
@@ -28,7 +29,47 @@ const Register = () => {
     const handleFullName = (e) => setFullName(e.target.value);
     const handlePhone = (e) => setPhone(e.target.value);
     const handleEmail = (e) => setEmail(e.target.value);
-    const handlePassword = (e) => setPassword(e.target.value);
+    const handlePassword = (e) => {
+        const pwd = e.target.value;
+        setPassword(pwd);
+        setPasswordStrength(checkPasswordStrength(pwd));
+    };
+    const checkPasswordStrength = (pwd) => {
+        if (!pwd) return "";
+        let score = 0;
+        Object.values(requirements).forEach(({ test }) => {
+            if (test(pwd)) score++;
+        });
+
+        if (score <= 2) return "Weak";
+        if (score === 3) return "Moderate";
+        if (score === 4) return "Good";
+        if (score === 5) return "Excellent";
+        return "";
+    };
+
+    const requirements = {
+        length: {
+            test: (pwd) => pwd.length >= 8,
+            label: "At least 8 characters"
+        },
+        uppercase: {
+            test: (pwd) => /[A-Z]/.test(pwd),
+            label: "One uppercase letter"
+        },
+        lowercase: {
+            test: (pwd) => /[a-z]/.test(pwd),
+            label: "One lowercase letter"
+        },
+        number: {
+            test: (pwd) => /[0-9]/.test(pwd),
+            label: "One number"
+        },
+        specialChar: {
+            test: (pwd) => /[@$!%*?&]/.test(pwd),
+            label: "One special character (@$!%*?&)"
+        }
+    };
     const handleOtp = (e) => setOtp(e.target.value);
 
     // Validation function
@@ -141,8 +182,42 @@ const Register = () => {
 
                     <input
                         onChange={handlePassword}
-                        type="password" placeholder="Password" />
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                    />
                     {passwordError && <p className="text-danger">{passwordError}</p>}
+
+                    {password.length > 0 && (
+                        <>
+                            <ul className="password-requirements" style={{ listStyleType: 'none', paddingLeft: 0 }}>
+                                {Object.entries(requirements).map(([key, { test, label }]) => {
+                                    const passed = test(password);
+                                    return (
+                                        <li key={key} style={{ color: passed ? 'green' : 'red', marginBottom: 3 }}>
+                                            {passed ? "✅" : "❌"} {label}
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+
+                            {passwordStrength && (
+                                <p
+                                    className={`password-strength ${passwordStrength.toLowerCase()}`}
+                                    style={{
+                                        color:
+                                            passwordStrength === "Weak" ? "red" :
+                                                passwordStrength === "Moderate" ? "orange" :
+                                                    passwordStrength === "Good" ? "blue" :
+                                                        "green"
+                                    }}
+                                >
+                                    Password strength: {passwordStrength}
+                                </p>
+                            )}
+                        </>
+                    )}
+
                 </div>
                 <button onClick={handleSubmit}>Register</button>
                 <p className="loginsignup-login">
