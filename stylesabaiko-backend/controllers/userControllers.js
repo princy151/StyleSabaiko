@@ -18,30 +18,34 @@ const createUser = async (req, res) => {
     }
 
     try {
-        const existingUser = await userModel.findOne({ email });
-        if (existingUser) {
+        const otp = await generateOtp();
+
+        let user = await userModel.findOne({ email });
+
+        if (user) {
+            // User already exists - resend OTP
+            user.otp = otp;
+            await user.save();
+
+            await sendOtpEmail(email, otp);
             return res.json({
-                success: false,
-                message: "User Already Exists!"
+                success: true,
+                message: "User already exists. New OTP sent to email."
             });
         }
 
-        const randomSalt = await bcrypt.genSalt(10);
-        const hashPassword = await bcrypt.hash(password, randomSalt);
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
-        const otp = await generateOtp();
-
-        const newUser = new userModel({
+        user = new userModel({
             fullName,
             phone,
             email,
-            password: hashPassword,
+            password: hashedPassword,
             otp
         });
 
-        await newUser.save();
-
-        // ✅ Send OTP to email
+        await user.save();
         await sendOtpEmail(email, otp);
 
         return res.json({
@@ -50,78 +54,83 @@ const createUser = async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error);
+        console.error('Error in createUser:', error);
         return res.status(500).json({
             success: false,
-            message: "Internal Server Error!"
+            message: "Internal Server Error"
         });
     }
 };
 
-// 2.login user function 
+
 const loginUser = async (req, res) => {
-    // res.send('Login user api in working!')
-    // check incomming data
-    console.log(req.body)
-    // destructuring 
     const { email, password } = req.body;
-    ///validation
-    if (!email || !password) {
-        return res.status(400).json({
-            "success": false,
-            "message": "Please enter all fields!"
-        })
-    }
+
     try {
-        //1. find user, if not :stop the process
-        const user = await userModel.findOne({ email: email })
+        const user = await userModel.findOne({ email });
+
         if (!user) {
-            return res.status(400).json({
-                "success": false,
-                "message": "User not found!"
-            })
-        }
-        //2.compare the password, if not :stop the process
-        const isValidPassword = await bcrypt.compare(password, user.password)
-        if (!isValidPassword) {
-            return res.status(400).json({
-                "success": false,
-                "message": "Incorrect password!"
-            })
+            return res.status(404).json({ success: false, message: "User not found" });
         }
 
-        //3.generate JWT token
-        //3.1 secret decryption key(.env)
-        const token = jwt.sign(
-            { id: user._id, isAdmin: user.isAdmin },
-            process.env['JWT_SECRET']
-        )
+        // Check if account is locked
+        if (user.isLocked && user.lockUntil > Date.now()) {
+            const remainingTime = Math.ceil((user.lockUntil - Date.now()) / 60000); // in minutes
+            return res.status(403).json({
+                success: false,
+                message: `Account locked due to too many failed login attempts. Try again in ${remainingTime} minute(s).`
+            });
+        }
 
-        res.cookie(user.id, user.id, {
-            // httpOnly: true,
-            // secure: true,
-            // sameSite: 'strict'
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            user.failedLoginAttempts += 1;
+
+            // Lock account after 5 failed attempts
+            if (user.failedLoginAttempts >= 5) {
+                user.isLocked = true;
+                user.lockUntil = new Date(Date.now() + 15 * 60 * 1000); // Lock for 15 minutes
+                await user.save();
+                return res.status(403).json({
+                    success: false,
+                    message: "Account locked due to 5 failed login attempts. Please try again in 15 minutes."
+                });
+            }
+
+            const remainingAttempts = 5 - user.failedLoginAttempts;
+            await user.save();
+
+            return res.status(401).json({
+                success: false,
+                message: `Invalid credentials. ${remainingAttempts} attempt(s) left before account lock.`
+            });
+        }
+
+        // Reset failed attempts on successful login
+        user.failedLoginAttempts = 0;
+        user.isLocked = false;
+        user.lockUntil = null;
+        await user.save();
+
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+            expiresIn: "7d"
         });
 
-        ///4. send the token, userdata,message to the user 
-        return res.json({
-            "success": true,
-            "message": "Login Successful",
-            "token": token,
-            "userData": user
-        })
-
+        return res.status(200).json({
+            success: true,
+            token,
+            userData: user,
+            message: "Login successful"
+        });
 
     } catch (error) {
-        console.log(error)
-        res.status(500).json({
-            "success": false,
-            "message": "internal server error!"
-        })
+        console.error("Login error:", error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
     }
+};
 
 
-}
 
 
 

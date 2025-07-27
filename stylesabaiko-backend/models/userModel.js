@@ -37,7 +37,19 @@ const userSchema = new mongoose.Schema({
     otp: {
         type: String,
         required: false 
-    }
+    },
+    failedLoginAttempts: {
+    type: Number,
+    default: 0
+  },
+  isLocked: {
+    type: Boolean,
+    default: false
+  },
+  lockUntil: {
+    type: Date,
+    default: null
+  }
 })
 const user = mongoose.model('users', userSchema)
 module.exports = user;
