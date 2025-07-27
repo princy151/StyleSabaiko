@@ -113,6 +113,7 @@ const loginUser = async (req, res) => {
         user.lockUntil = null;
         await user.save();
 
+        // Generate JWT token : token expires after 7 days after logging in
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
             expiresIn: "7d"
         });
@@ -152,64 +153,47 @@ const getUser = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
+    console.log('User ID from token:', req.user?.id);
+    console.log('Raw request body:', req.body);
 
-    const user = req.user;
-    // if there is files, upload new & delete old
-    if (req.files && req.files.image) {
+    try {
+        // your existing image upload and cleanup logic...
 
-        // 1. Destructure file
-        const { image } = req.files;
+        const updateParams = { ...req.body };
+        delete updateParams.password;
+        delete updateParams.email;
 
-        // 1. Generate unique name for each file
-        const imageName = `${Date.now()}-${image.name}`;
+        const finalUpdateParams = removeNullUndefinedWithReduce(updateParams);
+        console.log('Final update parameters:', finalUpdateParams);
 
-        // 2. define specific path
-        const imageUploadPath = path.join(__dirname, `../public/users/${imageName}`)
+        const updatedUser = await userModel.findOneAndUpdate(
+            { _id: req.user.id },
+            finalUpdateParams,
+            { new: true, runValidators: true }
+        );
 
-        // move to folder
-        await image.mv(imageUploadPath)
-
-        req.body.imageUrl = imageName;
-
-        // # Delete Old image
-        const existingUser = await userModel.findById(user.id)
-        if (!existingUser) {
+        if (!updatedUser) {
             return res.status(404).json({
                 success: false,
-                message: 'User does not exist.'
-            })
+                message: 'User not found.'
+            });
         }
-        // Search that image in directory
-        if (req.body.image) { // if new image is uploaded, then only remove old image
-            const oldImagePath = path.join(__dirname, `../public/users/${existingUser.imageUrl}`)
-            if (fs.existsSync(oldImagePath)) {
-                // delete from file system
-                fs.unlinkSync(oldImagePath)
-            }
-        }
-    }
 
-    const updateParams = req.body
-    delete updateParams.password; // Delete unwanted password param
-    delete updateParams.email // Delete unwanted email param
-
-    const finalUpdateParams = await removeNullUndefinedWithReduce(updateParams);
-    try {
-        const updatedUser = await userModel.findOneAndUpdate({ _id: user.id }, finalUpdateParams, {
-            new: true
-        });
         return res.status(201).json({
             success: true,
             message: 'User has been updated.',
             user: updatedUser
-        })
+        });
     } catch (error) {
-        return res.status(500).json({
+        console.error('Update user error:', error);
+        return res.status(400).json({
             success: false,
-            message: 'Internal Server Error'
-        })
+            message: 'Bad Request',
+            error: error.message,
+        });
     }
-}
+};
+
 
 const changePassword = async (req, res) => {
     const user = req.user;
@@ -391,6 +375,95 @@ const verifyOtp = async (req, res) => {
     }
 };
 
+// Step 1: Request Password Reset (Send OTP)
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({
+            success: false,
+            message: "Email is required."
+        });
+    }
+
+    try {
+        const user = await userModel.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found."
+            });
+        }
+
+        const otp = await generateOtp();
+        user.otp = otp;
+        await user.save();
+
+        await sendOtpEmail(email, otp);
+
+        return res.status(200).json({
+            success: true,
+            message: "OTP sent to email for password reset."
+        });
+    } catch (error) {
+        console.error("Forgot password error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+    }
+};
+
+// Step 2: Reset Password using OTP
+const resetPasswordWithOtp = async (req, res) => {
+    const { email, otp, newPassword } = req.body;
+
+    if (!email || !otp || !newPassword) {
+        return res.status(400).json({ success: false, message: "Email, OTP and new password are required." });
+    }
+
+    try {
+        const user = await userModel.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found." });
+        }
+
+        if (user.otp !== otp) {
+            return res.status(400).json({ success: false, message: "Invalid OTP." });
+        }
+
+        // Check if newPassword is same as current password
+        const isSamePassword = await bcrypt.compare(newPassword, user.password);
+        if (isSamePassword) {
+            return res.status(400).json({
+                success: false,
+                message: "New password cannot be the same as the current password."
+            });
+        }
+
+        // Hash new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // Update user password and clear OTP
+        user.password = hashedPassword;
+        user.otp = null;
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Password reset successfully."
+        });
+
+    } catch (error) {
+        console.error("Reset password error:", error);
+        return res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
+
+
 
 // exporting 
 module.exports = {
@@ -401,6 +474,8 @@ module.exports = {
     changePassword,
     getUsers,
     deleteUser,
-    verifyOtp
+    verifyOtp,
+    forgotPassword,
+    resetPasswordWithOtp,
 }
 

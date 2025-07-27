@@ -33,6 +33,24 @@ router.delete('/admin/:id', adminGuard, userControllers.deleteUser)
 
 router.post('/verify-otp', userControllers.verifyOtp);
 
+// --- Forgot password routes added below ---
+
+// Step 1: Request OTP to email
+router.post('/forgot-password', [
+  body('email').isEmail().withMessage('Enter a valid email').normalizeEmail()
+], userControllers.forgotPassword);
+
+// Step 2: Reset password using OTP
+router.post('/reset-password', [
+  body('email').isEmail().withMessage('Email is required').normalizeEmail(),
+  body('otp').notEmpty().withMessage('OTP is required'),
+  body('newPassword')
+    .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
+    .matches(/[A-Z]/).withMessage('Must contain an uppercase letter')
+    .matches(/[a-z]/).withMessage('Must contain a lowercase letter')
+    .matches(/\d/).withMessage('Must contain a number')
+    .matches(/[\W_]/).withMessage('Must contain a special character')
+    .trim()
+], userControllers.resetPasswordWithOtp);
+
 module.exports = router;
-
-
