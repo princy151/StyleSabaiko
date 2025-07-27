@@ -81,6 +81,28 @@
     margin-bottom: 5px;
 }
 
+.password-strength {
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.password-strength.weak {
+    color: red;
+}
+
+.password-strength.moderate {
+    color: orange;
+}
+
+.password-strength.good {
+    color: blue;
+}
+
+.password-strength.excellent {
+    color: green;
+}
+
+
 @media(max-width: 600px) {
     .loginsignup-container h1 {
         font-size: 22px;

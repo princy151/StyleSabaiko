@@ -31,6 +31,7 @@ const config = {
 export const registerUserApi = (data) => Api.post('/api/user/create', data)
 
 export const loginUserApi = (data) => Api.post('/api/user/login', data)
+export const verifyOtpApi = (data) => Api.post('/api/user/verify-otp', data)
 
 
 // =========================== Product APIS ============================== //
@@ -69,7 +70,14 @@ export const updateOrderStatusApi = (id, status) => Api.patch(`/api/order/update
 
 
 // =========================== User APIS ============================== //
-export const updateUserApi = (data) => Api.patch(`/api/user/update/me`, data, config)
+export const updateUserApi = (data) => {
+    return Api.patch('/api/user/update/me', data, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
+        }
+    });
+};
 export const changePasswordApi = (data) => Api.patch(`/api/user/change-password`, data, config)
 export const getUsersApi = () => Api.get(`/api/user/admin/get-all`, config)
 export const deleteUserApi = (id) => Api.delete(`/api/user/admin/${id}`, config)
