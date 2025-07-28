@@ -2,7 +2,8 @@ import './App.css';
 import {
   BrowserRouter as Router,
   Routes,
-  Route
+  Route,
+  useLocation
 } from 'react-router-dom';
 import Login from './pages/login/Login';
 import Navbar from './components/Navbar/Navbar';
@@ -32,20 +33,23 @@ import ListOrder from './components/Order/Order';
 import PaymentSuccess from './utils/payment/PaymentSuccess';
 import UnauthorizedPage from './pages/unauthorized/Unauthorized';
 
+// ✅ Create a wrapper component for logic using useLocation
+const AppWrapper = () => {
+  const location = useLocation();
+  const hideNavbarOnPaths = ['/login', '/register'];
 
-function App() {
   return (
-    <Router>
-      <Navbar/>
+    <>
+      {!hideNavbarOnPaths.includes(location.pathname) && <Navbar />}
       <ToastContainer />
       <Routes>
         <Route path='/register' element={<Register />} />
         <Route path='/login' element={<Login />} />
-        <Route element={<UserRoute/>}>
+        <Route element={<UserRoute />}>
           <Route path='/' element={<Homepage />} />
           <Route path='/product/:id' element={<Product />} />
-          <Route path='/men' element={<ProductList category={'men'}/>} />
-          <Route path='/women' element={<ProductList category={'women'}/>} />
+          <Route path='/men' element={<ProductList category={'men'} />} />
+          <Route path='/women' element={<ProductList category={'women'} />} />
           <Route path='/kids' element={<ProductList category={'kid'} />} />
           <Route path='/search/:keyword' element={<Search />} />
           <Route path='/cart' element={<Cart />} />
@@ -53,7 +57,7 @@ function App() {
           <Route path='/orders' element={<OrderHistory />} />
           <Route path='/order/:id' element={<SingleOrder />} />
           <Route path='/profile' element={<Account />} />
-          <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path='/payment-success' element={<PaymentSuccess />} />
         </Route>
         <Route element={<AdminRoute />}>
           <Route path='/admin/dashboard' element={<AdminDashboard />} />
@@ -63,16 +67,20 @@ function App() {
           <Route path='/admin/dashboard/customers' element={<ListCustomer />} />
           <Route path='/admin/dashboard/orders' element={<ListOrder />} />
         </Route>
-        <Route path="/unauthorized" element={<UnauthorizedPage />} />
+        <Route path='/unauthorized' element={<UnauthorizedPage />} />
       </Routes>
-      <Footer/>
+      {/* <Footer /> */}
+    </>
+  );
+};
+
+// ✅ Wrap everything under Router
+function App() {
+  return (
+    <Router>
+      <AppWrapper />
     </Router>
   );
 }
-
-
-
-// Task :
-// Create seperate page for Login and Register
 
 export default App;

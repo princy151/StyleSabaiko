@@ -6,20 +6,22 @@ import Item from '../Item/Item';
 const Popular = () => {
   const [popularProducts, setPopularProducts] = useState([]);
 
-  useEffect(() => {
-    getPopularProductsApi()
-      .then((res) => {
-        setPopularProducts(res.data.products);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
+useEffect(() => {
+  getPopularProductsApi()
+    .then((res) => {
+      const sorted = res.data.products
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setPopularProducts(sorted);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}, []);
 
   return (
     <section className="popular">
       <div className="popular-header">
-        <h1>NEWLY ADDED</h1>
+        <h1>FEATURED PRODUCTS</h1>
         <div className="underline"></div>
       </div>
 

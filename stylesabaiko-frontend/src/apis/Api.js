@@ -1,7 +1,7 @@
 import axios from "axios";
 // creating an instance of axios
 const Api = axios.create({
-    baseURL: process.env['REACT_APP_BACKEND_URL'] || "http://localhost:5000",
+    baseURL: process.env['REACT_APP_BACKEND_URL'] || "https://localhost:5000",
     withCredentials: true,
     headers: {
         "Access-Control-Allow-Credentials": "true",
@@ -84,6 +84,10 @@ export const deleteUserApi = (id) => Api.delete(`/api/user/admin/${id}`, config)
 
 
 // =========================== Khalti APIS ============================== //
+
+export const khaltiApi = (data) =>
+  axios.post(`https://localhost:5000/api/payment/khalti`, data);
+
 // export const khaltiApi  = (data) => axios.post('https://dev.khalti.com/api/v2/epayment/initiate/', {
 //     "return_url": "http://localhost:3000/payment-success",
 //     "website_url": "http://localhost:3000",
@@ -121,34 +125,34 @@ export const deleteUserApi = (id) => Api.delete(`/api/user/admin/${id}`, config)
 //     }
 //   })
 
-export const khaltiApi = (data) => axios.post(
-    'https://dev.khalti.com/api/v2/epayment/initiate/',
-    {
-        return_url: "http://localhost:3000/payment-success",
-        website_url: "http://localhost:3000",
-        amount: data.amount,                   // total amount in paisa (multiply by 100)
-        purchase_order_id: data.order_id,     // order id from your backend response
-        purchase_order_name: data.order_name, // name of order (e.g. "Purchase from StyleSabaiko")
-        customer_info: {
-            name: data.name,
-            phone: data.phone,
-            email: data.email || "",             // user email (optional)
-        },
-        amount_breakdown: [
-            {
-                label: "Subtotal",
-                amount: data.subtotal || data.amount,
-            },
-            {
-                label: "VAT",
-                amount: data.vat || 0,
-            },
-        ],
-        product_details: data.products || [],  // list of products in correct format
-    },
-    {
-        headers: {
-            Authorization: "Key 6fa778cd3be54fbcb62eaf35b71c0ae8"  // your Khalti secret key
-        }
-    }
-);
+// export const khaltiApi = (data) => axios.post(
+//     'https://dev.khalti.com/api/v2/epayment/initiate/',
+//     {
+//         return_url: "https://localhost:3000/payment-success",
+//         website_url: "https://localhost:3000",
+//         amount: data.amount,                   // total amount in paisa (multiply by 100)
+//         purchase_order_id: data.order_id,     // order id from your backend response
+//         purchase_order_name: data.order_name, // name of order (e.g. "Purchase from StyleSabaiko")
+//         customer_info: {
+//             name: data.name,
+//             phone: data.phone,
+//             email: data.email || "",             // user email (optional)
+//         },
+//         amount_breakdown: [
+//             {
+//                 label: "Subtotal",
+//                 amount: data.subtotal || data.amount,
+//             },
+//             {
+//                 label: "VAT",
+//                 amount: data.vat || 0,
+//             },
+//         ],
+//         product_details: data.products || [],  // list of products in correct format
+//     },
+//     {
+//         headers: {
+//             Authorization: "Key 6fa778cd3be54fbcb62eaf35b71c0ae8"  // your Khalti secret key
+//         }
+//     }
+// );

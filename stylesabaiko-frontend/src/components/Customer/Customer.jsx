@@ -45,7 +45,7 @@ const ListCustomer = () => {
                         <div className="listproduct-format">
                             <img
                                 className="listproduct-product-icon"
-                                src={`http://localhost:5000/users/${product.imageUrl}`}
+                                src={`https://localhost:5000/users/${product.imageUrl}`}
                                 alt=""
                                 onError={({ currentTarget }) => {
                                     currentTarget.onerror = null; // prevents looping

@@ -15,12 +15,6 @@ const Sidebar = () => {
                 </div>
             </Link>
 
-            <Link to='/admin/dashboard/customers' style={{ textDecoration: 'none' }}>
-                <div className={`sidebar-item ${location.pathname === '/admin/dashboard/customers' ? 'active' : ''}`}>
-                    <AiOutlineUser size={24} />
-                    <p>Customers</p>
-                </div>
-            </Link>
 
             <Link to='/admin/dashboard/orders' style={{ textDecoration: 'none' }}>
                 <div className={`sidebar-item ${location.pathname === '/admin/dashboard/orders' ? 'active' : ''}`}>

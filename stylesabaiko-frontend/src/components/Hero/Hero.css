@@ -13,7 +13,7 @@
 
 .hero-slide {
     position: relative;
-    height: 90vh;
+    height: 100vh;
     /* Set a fixed height or adjust as needed */
     overflow: hidden;
     /* Ensure no overflow issues */

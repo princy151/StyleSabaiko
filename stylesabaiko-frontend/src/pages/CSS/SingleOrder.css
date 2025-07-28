@@ -1,77 +1,90 @@
-/* Container */
-.order-detail-container {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 30px;
-    background: #ffffff;
-    box-shadow: 0 4px 12px #FF4141;
-    border-radius: 10px;
+.order-container {
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 40px 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "San Francisco", Roboto, Arial, sans-serif;
+  color: #1d1d1f;
 }
 
-/* Order Info */
-.order-info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 30px;
+.order-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  text-align: center;
 }
 
-.order-info>div {
-    flex: 1;
-    margin: 0 15px;
+.order-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
 }
 
-/* Shipping Address */
-.shipping-address {
-    border: 1px solid #eee;
-    padding: 20px;
-    border-radius: 5px;
-    margin-bottom: 30px;
-    background: #f9f9f9;
-}
-
-.shipping-address p {
-    margin-bottom: 10px;
-}
-
-/* Order Items */
+.order-summary,
 .order-items {
-    border-top: 1px solid #eee;
-    padding-top: 20px;
+  flex: 1;
+  min-width: 300px;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
-.order-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid #eee;
-    border-radius: 5px;
-    transition: box-shadow 0.3s ease;
-    background: #fefefe;
+.order-summary h3,
+.order-items h3 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
 }
 
-.order-item:hover {
-    box-shadow: 0 6px 18px #FF4141;
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  font-size: 15px;
 }
 
-.order-item img {
-    max-width: 100px;
-    height: 100px;
-    margin-right: 20px;
-    border-radius: 5px;
+.order-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.item-details {
-    flex: 1;
+.item-card {
+  display: flex;
+  gap: 16px;
+  padding: 14px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background-color: #fafafa;
+  align-items: center;
+  transition: box-shadow 0.2s;
 }
 
-.item-details h4 {
-    margin: 0 0 10px;
-    color: #333;
-    font-size: 1.2em;
+.item-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
-.item-details p {
-    margin: 5px 0;
-    color: #666;
+.item-card img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.item-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.item-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.item-meta {
+  font-size: 14px;
+  color: #666;
 }

@@ -24,7 +24,7 @@ const Hero = () => {
             <h2>Style for her. </h2>
             <Link to={"/women"}>
               <div className="hero-latest-btn">
-                <div>Latest Collection</div>
+                <div>Browse Now</div>
                 <img src='/Assets/arrow.png' alt="Arrow Icon" />
               </div>
             </Link>
@@ -36,7 +36,7 @@ const Hero = () => {
             <h2>Style for him.</h2>
             <Link to={"/men"}>
               <div className="hero-latest-btn">
-                <div>Latest Collection</div>
+                <div>Browse Now</div>
                 <img src='/Assets/arrow.png' alt="Arrow Icon" />
               </div>
             </Link>
@@ -48,7 +48,7 @@ const Hero = () => {
             <h2>Style for the little ones.</h2>
             <Link to={"/kids"}>
               <div className="hero-latest-btn">
-                <div>Latest Collection</div>
+                <div>Browse Now</div>
                 <img src='/Assets/arrow.png' alt="Arrow Icon" />
               </div>
             </Link>

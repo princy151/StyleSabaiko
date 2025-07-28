@@ -1,49 +1,61 @@
 .admin {
-    display: flex;
-    min-height: 100vh;
-    background: white;
-    margin-top: 80px;
+  display: flex;
+  min-height: 100vh;
+  background-color: #fafafa;
+  margin-top: 80px;
+  padding: 40px 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
 }
 
 .admin-dashboard {
-    flex: 1;
-    padding: 20px;
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-    margin: 20px;
+  flex: 1;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  padding: 40px 30px;
+  display: flex;
+  flex-direction: column;
 }
 
 .admin-dashboard h1 {
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #343a40;
-    font-weight: 600;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 36px;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 10px;
+  color: #111;
 }
 
 .dashboard-content {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 28px;
 }
 
 .dashboard-card {
-    flex: 1;
-    min-width: 200px;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0px 2px 8px #FF4141;
-    text-align: center;
+  background-color: #fefefe;
+  padding: 24px 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  text-align: center;
+  transition: box-shadow 0.25s ease;
+  cursor: default;
+}
+
+.dashboard-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
 }
 
 .dashboard-card h2 {
-    font-size: 20px;
-    color: #FF4141;
-    margin-bottom: 10px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
 }
 
 .dashboard-card p {
-    font-size: 16px;
-    color: #6c757d;
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.4;
 }

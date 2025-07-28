@@ -120,16 +120,7 @@ const Order = () => {
                     gap: "12px",
                   }}
                 >
-                  <img
-                    src={item.product.image}
-                    alt={item.product.title}
-                    style={{
-                      width: "60px",
-                      height: "60px",
-                      objectFit: "cover",
-                      borderRadius: "8px",
-                    }}
-                  />
+                
                   <div>
                     <div style={{ fontWeight: "600" }}>
                       {item.product.title}

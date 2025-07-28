@@ -100,7 +100,7 @@ header h1 {
 }
 
 .product-card:hover {
-  box-shadow: 0 8px 24px rgba(255, 107, 97, 0.4);
+  /* box-shadow: 0 8px 24px rgba(255, 107, 97, 0.4); */
   transform: translateY(-6px);
 }
 
@@ -197,7 +197,7 @@ header h1 {
 .pagination-btn:hover:not(:disabled) {
   background-color: #ff6b61;
   color: white;
-  box-shadow: 0 6px 15px rgba(255, 107, 97, 0.6);
+  /* box-shadow: 0 6px 15px rgba(255, 107, 97, 0.6); */
   transform: scale(1.1);
 }
 

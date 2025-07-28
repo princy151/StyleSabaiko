@@ -13,14 +13,16 @@ const OrderHistory = () => {
 
     useEffect(() => {
         setLoading(true);
-        getOrdersApi().then((res) => {
-            setTotalFetched(res.data.orders);
-            setOrders(res.data.orders.slice(0, PAGE_SIZE));
-            setLoading(false);
-        }).catch((err) => {
-            console.error(err);
-            setLoading(false);
-        });
+        getOrdersApi()
+            .then((res) => {
+                setTotalFetched(res.data.orders);
+                setOrders(res.data.orders.slice(0, PAGE_SIZE));
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error(err);
+                setLoading(false);
+            });
     }, []);
 
     const totalPages = Math.ceil(totalFetched.length / PAGE_SIZE);
@@ -37,17 +39,22 @@ const OrderHistory = () => {
             {loading ? (
                 <p className="loading">Loading...</p>
             ) : (
-                <><div className="order-list">
-                        {orders.map((order, index) => (
-                            <Link to={`/order/${order._id}`}>
-                            <div key={index} className="order-card">
-                                <img src={`${process.env.REACT_APP_BACKEND_IMAGE_URL}${order.products[0].product.imageUrl}`} alt={`Order ${order.orderId}`} className="order-image" />
-                                <div className="order-details">
-                                    <p className="order-number"><strong>Order Number:</strong> {order.orderId}</p>
-                                    <p className="order-date"><strong>Date:</strong> {new Date(order.createdAt).toLocaleDateString()}</p>
-                                    <p className="order-total"><strong>Total:</strong> Rs. {order.grandTotal.toFixed(2)}</p>
+                <>
+                    <div className="order-list">
+                        {orders.map((order) => (
+                            <Link to={`/order/${order._id}`} key={order._id} className="order-link">
+                                <div className="order-card">
+                                    <img
+                                        src={`${process.env.REACT_APP_BACKEND_IMAGE_URL}${order.products[0].product.imageUrl}`}
+                                        alt={`Order ${order.orderId}`}
+                                        className="order-image"
+                                    />
+                                    <div className="order-details">
+                                        <p className="order-number"><strong>Order Number:</strong> {order.orderId}</p>
+                                        <p className="order-date"><strong>Date:</strong> {new Date(order.createdAt).toLocaleDateString()}</p>
+                                        <p className="order-total"><strong>Total:</strong> Rs. {order.grandTotal.toFixed(2)}</p>
+                                    </div>
                                 </div>
-                            </div>
                             </Link>
                         ))}
                     </div>
