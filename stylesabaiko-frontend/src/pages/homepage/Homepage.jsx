@@ -7,7 +7,7 @@ const HomePage = () => {
         <div>
             <Hero />
             <Popular />
-            <NewCollections/>
+            
         </div>
     )
 }
