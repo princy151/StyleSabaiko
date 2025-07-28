@@ -33,14 +33,6 @@ const Navbar = () => {
         }
     };
 
-    const handleSearch = () => {
-        if (!keyword) {
-            toast.error('Search keyword cannot be empty.');
-            return;
-        }
-        navigate(`/search/${keyword}`);
-    };
-
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -73,11 +65,11 @@ const Navbar = () => {
                     {menu === "shop" && <div className="custom-hr"></div>}
                 </li>
                 <li onClick={() => setMenu("men")}>
-                    <Link to='/men'>Men</Link>
+                    <Link to='/men'>Male</Link>
                     {menu === "men" && <div className="custom-hr"></div>}
                 </li>
                 <li onClick={() => setMenu("women")}>
-                    <Link to="/women">Women</Link>
+                    <Link to="/women">Female</Link>
                     {menu === "women" && <div className="custom-hr"></div>}
                 </li>
                 <li onClick={() => setMenu("kids")}>
@@ -85,13 +77,6 @@ const Navbar = () => {
                     {menu === "kids" && <div className="custom-hr"></div>}
                 </li>
             </ul>
-
-            {/* 
-            <div className='nav-search'>
-                <input onChange={(e) => setKeyword(e.target.value)} type='text' placeholder='Search...' />
-                <button onClick={handleSearch}>Search</button>
-            </div> 
-            */}
 
             <div className="nav-login-cart">
                 {user && Object.keys(user).length >= 1 ? (
@@ -102,9 +87,10 @@ const Navbar = () => {
                             </p>
                             {dropdownOpen && (
                                 <div className="nav-dropdown-menu">
-                                    <Link to='/profile'>Profile</Link>
-                                    {user.isAdmin === true && <Link to='/admin/dashboard'>Admin Dashboard</Link>}
+                                    <Link to='/profile'>Profile</Link>                                    
                                     <Link to='/orders'>Orders</Link>
+                                    {/* RBAC implementation */}
+                                    {user.isAdmin === true && <Link to='/admin/dashboard/products'>Admin</Link>}
                                     <button onClick={handleLogout}>Logout</button>
                                 </div>
                             )}
