@@ -194,7 +194,7 @@ const Register = () => {
                                 {Object.entries(requirements).map(([key, { test, label }]) => {
                                     const passed = test(password);
                                     return (
-                                        <li key={key} style={{ color: passed ? 'green' : 'red', marginBottom: 3 }}>
+                                        <li key={key} style={{ color: passed ? 'lightgreen' : 'pink', marginBottom: 3 }}>
                                             {passed ? "✅" : "❌"} {label}
                                         </li>
                                     );
@@ -206,10 +206,10 @@ const Register = () => {
                                     className={`password-strength ${passwordStrength.toLowerCase()}`}
                                     style={{
                                         color:
-                                            passwordStrength === "Weak" ? "red" :
+                                            passwordStrength === "Weak" ? "pink" :
                                                 passwordStrength === "Moderate" ? "orange" :
-                                                    passwordStrength === "Good" ? "blue" :
-                                                        "green"
+                                                    passwordStrength === "Good" ? "lightblue" :
+                                                        "lightgreen"
                                     }}
                                 >
                                     Password strength: {passwordStrength}
@@ -219,7 +219,7 @@ const Register = () => {
                     )}
 
                 </div>
-                <button onClick={handleSubmit}>Register</button>
+                <button className='submit-btn' onClick={handleSubmit}>Register</button>
                 <p className="loginsignup-login">
                     Already have an account? <a href="/login"><span>Login here</span></a>
                 </p>
