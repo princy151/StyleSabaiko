@@ -20,6 +20,7 @@ const Login = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     // Modal States
+    //Rate Limitations
     const [showModal, setShowModal] = useState(false);
     const [forgotEmail, setForgotEmail] = useState("");
     const [otp, setOtp] = useState("");
