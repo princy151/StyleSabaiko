@@ -9,6 +9,10 @@ const { default: helmet } = require('helmet');
 const session = require('express-session');
 const path = require('path')
 const fs = require('fs')
+const https = require('https')
+
+const sslKey = fs.readFileSync(path.resolve(__dirname, '..', 'certs', 'localhost.key'));
+const sslCert = fs.readFileSync(path.resolve(__dirname, '..', 'certs', 'localhost.crt'));
 
 //2. creating an express app
 const app = express();
@@ -102,11 +106,17 @@ app.use('/api/user', require('./routes/userRoutes'))
 app.use('/api/product', require('./routes/productRoutes'))
 app.use('/api/cart', require('./routes/cartRoutes'))
 app.use('/api/order', require('./routes/orderRoutes'))
+app.use('/api/payment', require('./routes/khalti'))
 
 //4. starting the server
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server-app is running on port ${PORT}`)
-})
-
+https.createServer(
+  {
+    key: sslKey,
+    cert: sslCert,
+  },
+  app
+).listen(PORT, () => {
+  console.log(`✅ HTTPS server running at https://localhost:${PORT}`);
+});
 //exporting
 module.exports = app;
