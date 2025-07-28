@@ -73,7 +73,7 @@ const Login = () => {
     const handleSendOtp = async () => {
         if (!forgotEmail) return toast.error("Please enter your email");
         try {
-            const response = await fetch("http://localhost:5000/api/user/forgot-password", {
+            const response = await fetch("https://localhost:5000/api/user/forgot-password", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email: forgotEmail })
@@ -98,7 +98,7 @@ const Login = () => {
             return toast.error("Passwords do not match");
         }
         try {
-            const response = await fetch("http://localhost:5000/api/user/reset-password", {
+            const response = await fetch("https://localhost:5000/api/user/reset-password", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email: forgotEmail, otp, newPassword })
@@ -137,12 +137,12 @@ const Login = () => {
                             onClick={() => setShowPassword(!showPassword)}
                             style={{
                                 position: "absolute",
-                                left: 190,
+                                left: 300,
                                 fontSize: "16px",
-                                transform: "translateY(-50%)",
+                                top: "25%",
                                 background: "none",
                                 border: "none",
-                                color: "grey",
+                                color: "white",
                                 cursor: "pointer",
                                 fontWeight: "bold"
                             }}
@@ -153,14 +153,14 @@ const Login = () => {
                     {passwordError && <p className="text-danger">{passwordError}</p>}
                     <p style={{ textAlign: 'right', marginTop: '5px' }}>
                         <span
-                            style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
+                            style={{ cursor: 'pointer', color: 'white', textDecoration: 'underline' }}
                             onClick={handleForgotPassword}
                         >
                             Forgot Password?
                         </span>
                     </p>
                 </div>
-                <button onClick={handleSubmit}>Continue</button>
+                <button className="submit-btn" onClick={handleSubmit}>Log In</button>
                 <p className="loginsignup-login">Don't have an account? <a href="/register"><span>Register here</span></a></p>
             </div>
 
