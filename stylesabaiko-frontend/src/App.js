@@ -32,6 +32,8 @@ import ListCustomer from './components/Customer/Customer';
 import ListOrder from './components/Order/Order';
 import PaymentSuccess from './utils/payment/PaymentSuccess';
 import UnauthorizedPage from './pages/unauthorized/Unauthorized';
+import ActivityLogPage from './pages/admin/Log.tsx';
+// import ActivityLogPage from './pages/admin/Log';
 
 // ✅ Create a wrapper component for logic using useLocation
 const AppWrapper = () => {
@@ -61,6 +63,7 @@ const AppWrapper = () => {
         </Route>
         <Route element={<AdminRoute />}>
           <Route path='/admin/dashboard' element={<AdminDashboard />} />
+          <Route path='/admin/logs' element={<ActivityLogPage />} />
           <Route path='/admin/dashboard/products' element={<ListProduct />} />
           <Route path='/admin/dashboard/products/add' element={<AddProduct />} />
           <Route path='/admin/dashboard/products/edit/:id' element={<EditProduct />} />

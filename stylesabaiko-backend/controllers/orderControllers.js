@@ -1,42 +1,61 @@
 const orderModel = require('../models/orderModel')
 const orderid = require('order-id')('key');
+const logActivity = require("../middleware/activity");
 
-const createOrder = async (req, res) => { 
-    const user = req.user;
-    const { products, receiverName, receiverAddress, receiverPhone, receiverEmail, grandTotal } = req.body
-    if (!products || !receiverName || !receiverAddress || !receiverPhone || !receiverEmail || !grandTotal) {
-        return res.status(400).json({
-            message: 'All Fields are required.',
-            success: false
-        }); 
-    }
+const createOrder = async (req, res) => {
+  const user = req.user;
+  const { products, receiverName, receiverAddress, receiverPhone, receiverEmail, grandTotal } = req.body;
+  
+  if (!products || !receiverName || !receiverAddress || !receiverPhone || !receiverEmail || !grandTotal) {
+    return res.status(400).json({
+      message: 'All Fields are required.',
+      success: false
+    });
+  }
 
-    // Generate Order Id
-    const orderId = orderid.generate();
-    try {
-        const newOrder = new orderModel({
-            userId: user.id,
-            orderId: orderId,
-            products: products,
-            receiverName: receiverName,
-            receiverAddress: receiverAddress,
-            receiverPhone: receiverPhone,
-            receiverEmail: receiverEmail,
-            grandTotal: grandTotal
-        });
-        const order = await newOrder.save();
-        return res.status(201).json({
-            success: true,
-            message: 'Order has been stored.',
-            order: order
-        })
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: 'Internal Server Error.'
-        })
-    }
-}
+  const orderId = orderid.generate();
+
+  try {
+    const newOrder = new orderModel({
+      userId: user.id,
+      orderId: orderId,
+      products,
+      receiverName,
+      receiverAddress,
+      receiverPhone,
+      receiverEmail,
+      grandTotal
+    });
+
+    const order = await newOrder.save();
+
+    // Log activity here
+    await logActivity({
+      req,
+      userId: user.id,
+      action: "ORDER_CREATED",
+      details: {
+        orderId: orderId,
+        receiverName,
+        receiverEmail,
+        grandTotal,
+        productsCount: products.length,
+      },
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: 'Order has been stored.',
+      order
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Internal Server Error.'
+    });
+  }
+};
+
 
 const get_all_order_by_status = async (req, res) => { 
     const user = req.user;

@@ -107,6 +107,7 @@ app.use('/api/product', require('./routes/productRoutes'))
 app.use('/api/cart', require('./routes/cartRoutes'))
 app.use('/api/order', require('./routes/orderRoutes'))
 app.use('/api/payment', require('./routes/khalti'))
+app.use("/api/activity-log", require('./routes/activityroutes'));
 
 //4. starting the server
 https.createServer(
