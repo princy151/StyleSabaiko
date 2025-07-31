@@ -176,3 +176,95 @@
         border-radius: 10px;
     }
 }
+
+.modal-content.shadow-lg.rounded-3 {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    color: white;
+    transition: all 0.3s ease-in-out;
+    padding: 20px;
+}
+
+.modal-content.shadow-lg.rounded-3 .modal-header,
+.modal-content.shadow-lg.rounded-3 .modal-body,
+.modal-content.shadow-lg.rounded-3 .modal-footer {
+    background: transparent;
+    border: none;
+}
+
+.modal-content.shadow-lg.rounded-3 .modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+}
+
+.modal-content.shadow-lg.rounded-3 .form-control {
+    height: 50px;
+    padding-left: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1.5px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    font-size: 16px;
+    border-radius: 12px;
+    box-shadow: inset 2px 2px 6px rgba(255, 255, 255, 0.2);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modal-content.shadow-lg.rounded-3 .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+    font-style: italic;
+}
+
+.modal-content.shadow-lg.rounded-3 .btn-primary {
+    background: linear-gradient(135deg, #ff5f5f, #ff4141);
+    border: none;
+    color: white;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 10px 20px;
+    box-shadow: 0 6px 12px rgba(255, 65, 65, 0.5);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modal-content.shadow-lg.rounded-3 .btn-primary:hover {
+    background: linear-gradient(135deg, #ff3b3b, #ff1f1f);
+    box-shadow: 0 8px 20px rgba(255, 31, 31, 0.7);
+}
+
+.modal-content.shadow-lg.rounded-3 .btn-secondary {
+    background-color: rgba(108, 117, 125, 0.6);
+    border: none;
+    color: white;
+    font-weight: 500;
+    border-radius: 10px;
+    padding: 10px 20px;
+}
+
+.modal-content.shadow-lg.rounded-3 .btn-close {
+    filter: invert(1);
+}
+
+@media (max-width: 600px) {
+    .modal-content.shadow-lg.rounded-3 {
+        padding: 15px;
+    }
+
+    .modal-content.shadow-lg.rounded-3 .modal-title {
+        font-size: 18px;
+    }
+
+    .modal-content.shadow-lg.rounded-3 .form-control {
+        font-size: 15px;
+        height: 45px;
+    }
+
+    .modal-content.shadow-lg.rounded-3 .btn-primary,
+    .modal-content.shadow-lg.rounded-3 .btn-secondary {
+        font-size: 15px;
+        padding: 8px 16px;
+    }
+}

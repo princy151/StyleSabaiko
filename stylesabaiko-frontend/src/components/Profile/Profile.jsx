@@ -26,8 +26,15 @@ const Profile = () => {
     setUser((prev) => ({ ...prev, [name]: value }));
   };
 
+  const containsHTML = (str) => /<[^>]*>/g.test(str);
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (containsHTML(user.fullName) || containsHTML(user.phone)) {
+      toast.error('HTML tags are not allowed in name or phone.');
+      return;
+    }
 
     const userData = {
       fullName: user.fullName,

@@ -142,7 +142,17 @@ const AddProduct = () => {
                     )}
                 </label>
                 <input
-                    onChange={(e) => setImage(e.target.files[0])}
+                    onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                            const validTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+                            if (!validTypes.includes(file.type)) {
+                                toast.error("Only image files (jpg, png, webp, gif) are allowed.");
+                                return;
+                            }
+                            setImage(file);
+                        }
+                    }}
                     type="file"
                     name="image"
                     id="file-input"

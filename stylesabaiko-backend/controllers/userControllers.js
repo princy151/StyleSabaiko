@@ -9,181 +9,179 @@ const fs = require('fs')
 
 // 1. Creating user function
 const createUser = async (req, res) => {
-  const { fullName, phone, email, password } = req.body;
+    const { fullName, phone, email, password } = req.body;
 
-  if (!fullName || !phone || !email || !password) {
-    return res.json({
-      success: false,
-      message: "Please enter all fields!",
-    });
-  }
-
-  try {
-    const otp = await generateOtp();
-
-    let user = await userModel.findOne({ email });
-
-    if (user) {
-      // User already exists - resend OTP
-      user.otp = otp;
-      await user.save();
-
-      await sendOtpEmail(email, otp);
-
-      // ✅ log activity (existing user - resend OTP)
-      await logActivity({
-        req,
-        userId: user._id,
-        action: "RESEND_OTP_EXISTING_USER",
-        details: { email: user.email },
-      });
-
-      return res.json({
-        success: true,
-        message: "User already exists. New OTP sent to email.",
-      });
+    if (!fullName || !phone || !email || !password) {
+        return res.json({
+            success: false,
+            message: "Please enter all fields!",
+        });
     }
 
-    // New user creation
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    try {
+        const otp = await generateOtp();
 
-    user = new userModel({
-      fullName,
-      phone,
-      email,
-      password: hashedPassword,
-      otp,
-    });
+        let user = await userModel.findOne({ email });
 
-    await user.save();
-    await sendOtpEmail(email, otp);
+        if (user) {
+            user.otp = otp;
+            await user.save();
 
-    // ✅ log activity (new user)
-    await logActivity({
-      req,
-      userId: user._id,
-      action: "USER_REGISTER",
-      details: {
-        fullName: user.fullName,
-        phone: user.phone,
-        email: user.email,
-      },
-    });
+            await sendOtpEmail(email, otp);
 
-    return res.json({
-      success: true,
-      message: "User created successfully. OTP sent to email.",
-    });
-  } catch (error) {
-    console.error("Error in createUser:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
-    });
-  }
+            // ✅ log activity 
+            await logActivity({
+                req,
+                userId: user._id,
+                action: "RESEND_OTP_EXISTING_USER",
+                details: { email: user.email },
+            });
+
+            return res.json({
+                success: true,
+                message: "User already exists. New OTP sent to email.",
+            });
+        }
+
+        // New user creation
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        user = new userModel({
+            fullName,
+            phone,
+            email,
+            password: hashedPassword,
+            otp,
+        });
+
+        await user.save();
+        await sendOtpEmail(email, otp);
+
+        await logActivity({
+            req,
+            userId: user._id,
+            action: "USER_REGISTER",
+            details: {
+                fullName: user.fullName,
+                phone: user.phone,
+                email: user.email,
+            },
+        });
+
+        return res.json({
+            success: true,
+            message: "User created successfully. OTP sent to email.",
+        });
+    } catch (error) {
+        console.error("Error in createUser:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
 };
 
 
 const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+    const { email, password } = req.body;
 
-  try {
-    const user = await userModel.findOne({ email });
+    try {
+        const user = await userModel.findOne({ email });
 
-    if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
-    }
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
 
-    // Check if account is locked
-    if (user.isLocked && user.lockUntil > Date.now()) {
-      const remainingTime = Math.ceil((user.lockUntil - Date.now()) / 60000); // in minutes
+        // Check if account is locked
+        if (user.isLocked && user.lockUntil > Date.now()) {
+            const remainingTime = Math.ceil((user.lockUntil - Date.now()) / 60000); // in minutes
 
-      // 🔒 Log locked account login attempt
-      await logActivity({
-        req,
-        userId: user._id,
-        action: "LOGIN_ATTEMPT_WHILE_LOCKED",
-        details: { email: user.email, lockUntil: user.lockUntil },
-      });
+            // 🔒 Log locked account login attempt
+            await logActivity({
+                req,
+                userId: user._id,
+                action: "LOGIN_ATTEMPT_WHILE_LOCKED",
+                details: { email: user.email, lockUntil: user.lockUntil },
+            });
 
-      return res.status(403).json({
-        success: false,
-        message: `Account locked. Try again in ${remainingTime} minute(s).`,
-      });
-    }
+            return res.status(403).json({
+                success: false,
+                message: `Account locked. Try again in ${remainingTime} minute(s).`,
+            });
+        }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await bcrypt.compare(password, user.password);
 
-    if (!isMatch) {
-      user.failedLoginAttempts += 1;
+        if (!isMatch) {
+            user.failedLoginAttempts += 1;
 
-      // 🔐 Account lock after 5 failed attempts
-      if (user.failedLoginAttempts >= 5) {
-        user.isLocked = true;
-        user.lockUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+            // 🔐 Account lock after 5 failed attempts
+            if (user.failedLoginAttempts >= 5) {
+                user.isLocked = true;
+                user.lockUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+                await user.save();
+
+                // 🔒 Log account lock
+                await logActivity({
+                    req,
+                    userId: user._id,
+                    action: "ACCOUNT_LOCKED",
+                    details: { email: user.email, reason: "Too many failed attempts" },
+                });
+
+                return res.status(403).json({
+                    success: false,
+                    message: "Account locked due to 5 failed login attempts. Try again in 15 minutes.",
+                });
+            }
+
+            const remainingAttempts = 5 - user.failedLoginAttempts;
+            await user.save();
+
+            // ❌ Log failed login
+            await logActivity({
+                req,
+                userId: user._id,
+                action: "FAILED_LOGIN",
+                details: { email: user.email, remainingAttempts },
+            });
+
+            return res.status(401).json({
+                success: false,
+                message: `Invalid credentials. ${remainingAttempts} attempt(s) left.`,
+            });
+        }
+
+        // ✅ Reset on success
+        user.failedLoginAttempts = 0;
+        user.isLocked = false;
+        user.lockUntil = null;
         await user.save();
 
-        // 🔒 Log account lock
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+            expiresIn: "7d",
+        });
+
+        // ✅ Log successful login
         await logActivity({
-          req,
-          userId: user._id,
-          action: "ACCOUNT_LOCKED",
-          details: { email: user.email, reason: "Too many failed attempts" },
+            req,
+            userId: user._id,
+            action: "LOGIN_SUCCESS",
+            details: { email: user.email },
         });
 
-        return res.status(403).json({
-          success: false,
-          message: "Account locked due to 5 failed login attempts. Try again in 15 minutes.",
+        return res.status(200).json({
+            success: true,
+            token,
+            userData: user,
+            message: "Login successful",
         });
-      }
 
-      const remainingAttempts = 5 - user.failedLoginAttempts;
-      await user.save();
-
-      // ❌ Log failed login
-      await logActivity({
-        req,
-        userId: user._id,
-        action: "FAILED_LOGIN",
-        details: { email: user.email, remainingAttempts },
-      });
-
-      return res.status(401).json({
-        success: false,
-        message: `Invalid credentials. ${remainingAttempts} attempt(s) left.`,
-      });
+    } catch (error) {
+        console.error("Login error:", error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
     }
-
-    // ✅ Reset on success
-    user.failedLoginAttempts = 0;
-    user.isLocked = false;
-    user.lockUntil = null;
-    await user.save();
-
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
-
-    // ✅ Log successful login
-    await logActivity({
-      req,
-      userId: user._id,
-      action: "LOGIN_SUCCESS",
-      details: { email: user.email },
-    });
-
-    return res.status(200).json({
-      success: true,
-      token,
-      userData: user,
-      message: "Login successful",
-    });
-
-  } catch (error) {
-    console.error("Login error:", error);
-    return res.status(500).json({ success: false, message: "Internal server error" });
-  }
 };
 
 
@@ -359,8 +357,9 @@ const sendOtpEmail = async (to, otp) => {
     });
 
     const mailOptions = {
-        from: `"Your App Name" <${process.env.EMAIL_USER}>`,
+        from: `"StyleSabaiko" <${process.env.EMAIL_USER}>`,
         to,
+        
         subject: 'Your OTP Code',
         html: `<p>Hello,</p><p>Your OTP is: <b>${otp}</b></p><p>This OTP is valid for 10 minutes.</p>`
     };

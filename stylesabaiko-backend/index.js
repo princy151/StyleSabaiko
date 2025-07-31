@@ -40,12 +40,11 @@ if (!fs.existsSync(auditLogDir)) {
 // Create a write stream for logs
 const logStream = fs.createWriteStream(path.join(auditLogDir, 'access.log'), { flags: 'a' });
 
-// Custom format with timestamp
 morgan.token('timestamp', () => new Date().toISOString());
 
 const logFormat = '[:timestamp] :method :url :status :response-time ms';
 
-// Use Morgan with custom format
+// Use Morgan 
 app.use(morgan(logFormat, { stream: logStream }));
 
 

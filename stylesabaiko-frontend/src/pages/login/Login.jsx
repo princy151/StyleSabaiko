@@ -53,6 +53,7 @@ const Login = () => {
                 } else {
                     localStorage.setItem("token", res.data.token);
                     localStorage.setItem("user", JSON.stringify(res.data.userData));
+                    console.log("Stored token:", localStorage.getItem("token"));
                     navigate('/')
                 }
             })
