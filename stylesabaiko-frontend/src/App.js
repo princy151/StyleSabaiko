@@ -19,7 +19,7 @@ import AdminDashboard from './pages/admin/AdminDasboard';
 import ListProduct from './components/Product/Product';
 import AddProduct from './components/Product/Add/AddProduct';
 import EditProduct from './components/Product/Edit/EditProduct';
-import Footer from './components/Footer/Footer';
+// import Footer from './components/Footer/Footer';
 import ProductList from './pages/productList/ProductList';
 import Search from './pages/search/Search';
 import Cart from './pages/cart/Cart';
